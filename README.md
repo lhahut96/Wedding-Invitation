@@ -16,7 +16,7 @@ Everything (names, date, story, events, bank info, music) is in `content/wedding
 
 - **Photos**: put files in `public/images/` and set `src: "/images/your-file.jpg"` on any photo entry. Entries without `src` show a gradient placeholder.
 - **Music**: put an mp3 in `public/music/` and set `music.src`.
-- **Wishes**: currently saved only in each visitor's browser (localStorage). Hook `save` in `components/Wishes.tsx` up to a backend to collect them.
+- **RSVPs & wishes**: stored in Postgres. `cp .env.example .env`, then `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db` and `npm run dev` locally, or `docker compose up -d --build` on the server (Traefik on the `lucas-proxy` network, see `.env.example`). Download as CSV (opens correctly in Excel with Vietnamese): `/api/export?type=rsvps&token=<ADMIN_TOKEN>` or `type=wishes`.
 
 ## Sections
 

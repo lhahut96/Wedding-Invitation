@@ -3,34 +3,45 @@
 import { useEffect, useRef, useState } from "react";
 import { useReveal } from "./useReveal";
 
-type Wish = { name: string; message: string; at: number };
-const KEY = "wedding-wishes";
+type Wish = { id: number; name: string; message: string };
 
-// Wishes are stored in the visitor's own browser only.
-// To collect them for real, replace `save` with a call to a backend (Google Sheets, Supabase, Firebase...).
 export default function Wishes() {
   const root = useRef<HTMLElement>(null);
   useReveal(root);
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    try {
-      setWishes(JSON.parse(localStorage.getItem(KEY) ?? "[]"));
-    } catch {}
+    fetch("/api/wishes")
+      .then((r) => (r.ok ? r.json() : []))
+      .then(setWishes)
+      .catch(() => {});
   }, []);
 
-  const save = (e: React.FormEvent) => {
+  const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim()) return;
-    const next = [{ name: name.trim(), message: message.trim(), at: Date.now() }, ...wishes];
-    setWishes(next);
+    if (!name.trim() || !message.trim() || sending) return;
+    setSending(true);
+    setError(false);
     try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {}
-    setName("");
-    setMessage("");
+      const res = await fetch("/api/wishes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, message }),
+      });
+      if (!res.ok) throw new Error();
+      const wish: Wish = await res.json();
+      setWishes((w) => [wish, ...w]);
+      setName("");
+      setMessage("");
+    } catch {
+      setError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -50,13 +61,14 @@ export default function Wishes() {
           rows={3}
           className="resize-none border-b border-ink/30 bg-transparent py-3 outline-none focus:border-ink"
         />
-        <button className="mt-4 self-center cursor-pointer rounded-full bg-ink px-8 py-3 text-sm text-cream transition hover:bg-wine">
+        {error && <p className="text-center text-sm text-wine">Không gửi được, vui lòng thử lại.</p>}
+        <button disabled={sending} className="mt-4 self-center cursor-pointer rounded-full bg-ink px-8 py-3 text-sm text-cream transition hover:bg-wine">
           Gửi lời chúc
         </button>
       </form>
       <ul className="mx-auto mt-12 max-w-xl space-y-6">
         {wishes.map((w) => (
-          <li key={w.at} className="border-l-2 border-blush pl-4">
+          <li key={w.id} className="border-l-2 border-blush pl-4">
             <p className="font-semibold">{w.name}</p>
             <p className="text-ink/70">{w.message}</p>
           </li>

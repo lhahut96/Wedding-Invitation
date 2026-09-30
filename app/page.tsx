@@ -7,6 +7,7 @@ import Story from "@/components/Story";
 import Gallery from "@/components/Gallery";
 import MusicPlayer from "@/components/MusicPlayer";
 import Schedule from "@/components/Schedule";
+import Rsvp from "@/components/Rsvp";
 import Wishes from "@/components/Wishes";
 import Gift from "@/components/Gift";
 import Footer from "@/components/Footer";
@@ -23,6 +24,7 @@ export default function Home() {
         <Gallery />
         <MusicPlayer />
         <Schedule />
+        <Rsvp />
         <Wishes />
         <Gift />
         <Footer />
