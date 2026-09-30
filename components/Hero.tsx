@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { wedding } from "@/content/wedding";
-import Photo from "./Photo";
 import SplitChars from "./SplitChars";
 
 // Size of the centered "window" the photos stack inside before it opens to full screen.
@@ -83,21 +82,21 @@ export default function Hero() {
             className="hero-layer absolute left-1/2 top-1/2 h-[480px] w-[320px] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
             style={{ zIndex: i + 1 }}
           >
-            <Photo photo={f} className="size-full" />
+            <img src={f.src} alt={f.alt} className="object-cover size-full" />
           </div>
         ))}
 
         {/* Last layer: full-screen main photo, only visible through the window until it opens */}
         <div className="hero-layer absolute inset-0 overflow-hidden bg-ink" style={{ zIndex: hero.frames.length + 1 }}>
           <div className="hero-main-img size-full">
-            <Photo photo={hero.main} className="size-full opacity-85" />
+            <img src={hero.main.src} alt={hero.main.alt} className="object-cover size-full opacity-85" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
         </div>
       </div>
 
       <div className="hero-text pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center text-cream select-none">
-        <h1 className="hero-title overflow-hidden font-display text-[16vw] md:text-[11vw] leading-none italic">
+        <h1 className="hero-title overflow-hidden font-display text-[9vw] md:text-[8vw] leading-none italic">
           <SplitChars text={`${bride.name} & ${groom.name}`} />
         </h1>
         <p className="hero-date mt-4 tracking-[0.4em] text-sm md:text-base">{dateLabel}</p>

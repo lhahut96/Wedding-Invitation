@@ -1,74 +1,112 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { wedding } from "@/content/wedding";
-import Photo from "./Photo";
+import { useReveal } from "./useReveal";
 
-// Where each photo sits around the center (in vw / vh) as it flies toward the viewer.
-const SPOTS = [
-  { x: -26, y: -18 }, { x: 24, y: 14 }, { x: -20, y: 22 }, { x: 28, y: -20 }, { x: 0, y: -26 },
-  { x: -30, y: 4 }, { x: 22, y: -4 }, { x: -8, y: 26 }, { x: 10, y: -12 },
-];
-
-// 3D fly-through: photos appear far away one by one and rush past the camera as you scroll.
+// Masonry grid of thumbnails; clicking one opens a full-size lightbox (arrows / swipe / Esc).
 export default function Gallery() {
   const root = useRef<HTMLElement>(null);
+  useReveal(root);
   const photos = wedding.gallery;
+  const [open, setOpen] = useState<number | null>(null);
+  const touchX = useRef<number | null>(null);
+
+  const step = useCallback(
+    (d: number) => setOpen((i) => (i === null ? i : (i + d + photos.length) % photos.length)),
+    [photos.length],
+  );
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      const items = gsap.utils.toArray<HTMLElement>(".fly-item");
-      gsap.set(items, { z: -2400, opacity: 0 });
+    if (open === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(null);
+      if (e.key === "ArrowRight") step(1);
+      if (e.key === "ArrowLeft") step(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.documentElement.style.overflow = "";
+    };
+  }, [open, step]);
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: () => `+=${items.length * 50}%`,
-          scrub: 1,
-          pin: true,
-          invalidateOnRefresh: true,
-          onEnter: () => popLabel(),
-          onEnterBack: () => popLabel(),
-        },
-      });
-
-      items.forEach((el, i) => {
-        const at = i * 0.6;
-        tl.to(el, { opacity: 1, duration: 0.4, ease: "none" }, at)
-          .to(el, { z: 900, duration: 4, ease: "power1.in" }, at)
-          .to(el, { opacity: 0, duration: 0.6, ease: "none" }, at + 3.4);
-      });
-
-      function popLabel() {
-        gsap.fromTo(".fly-label", { opacity: 0, scale: 0.1 }, { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out" });
-      }
-    }, root);
-    return () => ctx.revert();
-  }, []);
+  const current = open === null ? null : photos[open];
 
   return (
-    <section ref={root} className="relative h-screen w-full overflow-hidden bg-ink" style={{ perspective: "1000px" }}>
-      <div className="fly-label pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center text-center text-cream">
-        <h2 className="font-display text-6xl italic md:text-8xl">{wedding.galleryLabel.title}</h2>
-        <p className="mt-4 tracking-[0.4em] text-blush">{wedding.galleryLabel.years}</p>
+    <section id="gallery" ref={root} className="bg-cream px-4 py-24 md:px-10">
+      <div className="reveal text-center">
+        <h2 className="font-display text-5xl italic md:text-7xl">{wedding.galleryLabel.title}</h2>
+        <p className="mt-4 tracking-[0.4em] text-wine">{wedding.galleryLabel.years}</p>
       </div>
 
-      {photos.map((p, i) => {
-        const s = SPOTS[i % SPOTS.length];
-        return (
-          <div
-            key={i}
-            className="fly-item absolute left-1/2 top-1/2 z-10 w-[40vw] md:w-[20vw]"
-            style={{ marginLeft: `${s.x}vw`, marginTop: `${s.y}vh`, translate: "-50% -50%" }}
+      <div className="mx-auto mt-14 max-w-6xl columns-2 gap-3 md:columns-3 md:gap-4">
+        {photos.map((p, i) => (
+          <button
+            key={p.src}
+            onClick={() => setOpen(i)}
+            aria-label={`Xem ảnh ${i + 1}`}
+            className="reveal group mb-3 block w-full cursor-zoom-in overflow-hidden rounded-sm md:mb-4"
           >
-            <Photo photo={p} className="aspect-[3/4] w-full rounded-sm shadow-2xl" />
-          </div>
-        );
-      })}
+            <img
+              src={p.src}
+              alt={p.alt}
+              loading="lazy"
+              className="w-full transition duration-500 group-hover:scale-105"
+            />
+          </button>
+        ))}
+      </div>
+
+      {current && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          data-lenis-prevent
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setOpen(null)}
+          onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            if (touchX.current === null) return;
+            const dx = e.changedTouches[0].clientX - touchX.current;
+            if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+            touchX.current = null;
+          }}
+        >
+          <img
+            src={current.src}
+            alt={current.alt}
+            className="max-h-full max-w-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            aria-label="Đóng"
+            onClick={() => setOpen(null)}
+            className="absolute right-4 top-4 cursor-pointer p-2 text-3xl leading-none text-white/80 hover:text-white"
+          >
+            ×
+          </button>
+          {[-1, 1].map((d) => (
+            <button
+              key={d}
+              aria-label={d < 0 ? "Ảnh trước" : "Ảnh sau"}
+              onClick={(e) => {
+                e.stopPropagation();
+                step(d);
+              }}
+              className={`absolute top-1/2 -translate-y-1/2 cursor-pointer p-3 text-4xl text-white/70 hover:text-white ${
+                d < 0 ? "left-2 md:left-6" : "right-2 md:right-6"
+              }`}
+            >
+              {d < 0 ? "‹" : "›"}
+            </button>
+          ))}
+          <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/60">
+            {(open ?? 0) + 1} / {photos.length}
+          </p>
+        </div>
+      )}
     </section>
   );
 }

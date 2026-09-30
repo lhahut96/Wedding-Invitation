@@ -3,10 +3,11 @@
 @theme {
   --font-sans: var(--font-body), system-ui, sans-serif;
   --font-display: var(--font-display), Georgia, serif;
-  --color-cream: #f7f2ea;
-  --color-ink: #1c1917;
-  --color-blush: #e8c4b8;
-  --color-wine: #7a2e3a;
+  /* Palette taken from phuocnhiwedding.space */
+  --color-cream: #f8f6f2;
+  --color-ink: #2e2a26;
+  --color-blush: #d48888;
+  --color-wine: #5a5048;
 }
 
 html.lenis, html.lenis body { height: auto; }
@@ -14,9 +15,6 @@ html.lenis, html.lenis body { height: auto; }
 
 body { background: var(--color-cream); color: var(--color-ink); }
 
-.placeholder-photo {
-  background: linear-gradient(135deg, #e8c4b8 0%, #f3e3d3 45%, #cdb8a6 100%);
-}
 
 @keyframes spin-slow { to { transform: rotate(360deg); } }
 .animate-spin-slow { animation: spin-slow 6s linear infinite; }

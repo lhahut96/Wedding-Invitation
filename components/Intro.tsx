@@ -45,7 +45,7 @@ export default function Intro() {
 
       <h2
         ref={headline}
-        className="translate-y-5 whitespace-nowrap px-4 font-display text-[16vw] uppercase leading-none text-wine md:translate-y-8 lg:translate-y-16 lg:text-[160px]"
+        className="translate-y-5 whitespace-nowrap px-4 font-display text-[6.5vw] uppercase leading-none text-wine md:translate-y-8 lg:translate-y-16"
       >
         <span className="intro-name-left inline-block">{groom.name}</span>
         <span className="mx-3 inline-block">&</span>

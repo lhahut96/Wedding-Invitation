@@ -1,27 +1,26 @@
 // ─────────────────────────────────────────────────────────────
 // All wedding content lives here. Edit this file only.
 // Photos: drop files into /public/images and set `src` to e.g. "/images/hero-1.jpg".
-// Any photo without `src` renders as a soft gradient placeholder.
 // ─────────────────────────────────────────────────────────────
 
-export type Photo = { src?: string; alt: string };
+export type Photo = { src: string; alt: string };
 
 export const wedding = {
   meta: {
-    title: "An & Bình — Save the date",
-    description: "Thiệp cưới của An & Bình",
+    title: "Trâm Anh & Anh Tú — Save the date",
+    description: "Thiệp cưới của Trâm Anh & Anh Tú",
   },
 
   bride: {
-    name: "An",
-    fullName: "Nguyễn Thu An",
+    name: "Trâm Anh",
+    fullName: "Trần Như Trâm Anh",
     role: "Cô dâu",
     bio: "Mê cà phê sữa đá, sách cũ và những chuyến đi không kế hoạch.",
     photo: { src: "/images/bride.jpg", alt: "Cô dâu" } as Photo,
   },
   groom: {
-    name: "Bình",
-    fullName: "Trần Quốc Bình",
+    name: "Anh Tú",
+    fullName: "Lê Hoàng Anh Tú",
     role: "Chú rể",
     bio: "Kỹ sư ban ngày, đầu bếp nghiệp dư ban đêm, fan cứng của mèo.",
     photo: { src: "/images/groom.jpg", alt: "Chú rể" } as Photo,
@@ -30,8 +29,6 @@ export const wedding = {
   // Square photo that stays pinned in the middle while the bride/groom profiles scroll past
   couplePhoto: { src: "/images/couple.jpg", alt: "Ảnh đôi" } as Photo,
 
-  // ISO date-time of the main ceremony (used for the countdown)
-  date: "2026-12-20T17:00:00+07:00",
   dateLabel: "20 . 12 . 2026",
 
   hero: {
@@ -56,64 +53,33 @@ export const wedding = {
     ],
   },
 
-  galleryLabel: { title: "Khoảnh khắc", years: "2019 — nay" },
-
-  story: [
-    { year: "2019", title: "Lần đầu gặp", text: "Chung một nhóm dự án, chung cả deadline.", photo: { src: "/images/story-1.jpg", alt: "2019" } },
-    { year: "2021", title: "Chính thức hẹn hò", text: "Một buổi tối mưa và ly trà đào quen thuộc.", photo: { src: "/images/story-2.jpg", alt: "2021" } },
-    { year: "2023", title: "Chuyến đi đầu tiên", text: "Đà Lạt, lạnh run nhưng vui hết cỡ.", photo: { src: "/images/story-3.jpg", alt: "2023" } },
-    { year: "2025", title: "Lời cầu hôn", text: "Anh quỳ, em khóc, con mèo thì bỏ đi.", photo: { src: "/images/story-4.jpg", alt: "2025" } },
-    { year: "2026", title: "Về chung một nhà", text: "Và đây là chương tiếp theo.", photo: { src: "/images/story-5.jpg", alt: "2026" } },
-  ] as { year: string; title: string; text: string; photo: Photo }[],
+  galleryLabel: { title: "Khoảnh khắc", years: "2021 — nay" },
 
   gallery: Array.from({ length: 9 }, (_, i) => ({ src: `/images/gallery-${i + 1}.jpg`, alt: `Ảnh ${i + 1}` })) as Photo[],
 
-  music: {
-    title: "Bài hát của tụi mình",
-    artist: "Nghệ sĩ",
-    // Put an mp3 you have rights to in /public/music and set src, e.g. "/music/song.mp3"
-    src: "",
+  // Venue + timeline (from the Canva design)
+  venue: {
+    lead: "hôn lễ được tổ chức tại",
+    name: "Louis Palace",
+    kind: "Trung tâm tiệc cưới",
+    address: "Km5+200, đường Lê Trọng Tấn, An Khánh, Hoài Đức, Hà Nội.",
+    mapUrl:
+      "https://www.google.com/maps/dir/Trung+t%C3%A2m+t%E1%BB%95+ch%E1%BB%A9c+S%E1%BB%B1+ki%E1%BB%87n+%26+Ti%E1%BB%87c+c%C6%B0%E1%BB%9Bi+Louis+Palace,+Km5%2B200,+%C4%90.+Ho%C3%A0ng+T%C3%B9ng,+T%C3%A2y+M%E1%BB%97,+H%C3%A0+N%E1%BB%99i+13200,+Vi%E1%BB%87t+Nam",
   },
-
-  events: [
-    {
-      title: "Lễ Vu Quy",
-      time: "09:00 · 20.12.2026",
-      place: "Tư gia nhà gái",
-      address: "123 Đường ABC, Quận 1, TP.HCM",
-      mapUrl: "https://maps.google.com/?q=Ho+Chi+Minh+City",
-      photo: { src: "/images/event-1.jpg", alt: "Lễ Vu Quy" } as Photo,
-    },
-    {
-      title: "Lễ Thành Hôn",
-      time: "11:00 · 20.12.2026",
-      place: "Tư gia nhà trai",
-      address: "789 Đường GHI, Quận 7, TP.HCM",
-      mapUrl: "https://maps.google.com/?q=Ho+Chi+Minh+City",
-      photo: { src: "/images/event-2.jpg", alt: "Lễ Thành Hôn" } as Photo,
-    },
-    {
-      title: "Tiệc Cưới",
-      time: "17:00 · 20.12.2026",
-      place: "Trung tâm Hội nghị XYZ",
-      address: "456 Đường DEF, Quận 3, TP.HCM",
-      mapUrl: "https://maps.google.com/?q=Ho+Chi+Minh+City",
-      photo: { src: "/images/event-3.jpg", alt: "Tiệc Cưới" } as Photo,
-    },
+  timeline: [
+    { time: "11:00 am", label: "Tổ chức hôn lễ" },
+    { time: "12:00 pm", label: "Ăn tiệc cưới" },
+    { time: "12:45 pm", label: "Chụp ảnh" },
+    { time: "1:30 pm", label: "Tung hoa cưới" },
+    { time: "2:00 pm", label: "Cocktail hour" },
+    { time: "4:00 pm", label: "Tiệc nhảy" },
+    { time: "6:00 pm", label: "Tiệc tối" },
   ],
-
-  gift: {
-    note: "Sự hiện diện của bạn là món quà lớn nhất. Nếu muốn gửi thêm chút yêu thương:",
-    accounts: [
-      { owner: "NGUYEN THU AN", bank: "Vietcombank", number: "0123456789", qr: { alt: "QR cô dâu" } as Photo },
-      { owner: "TRAN QUOC BINH", bank: "Techcombank", number: "9876543210", qr: { alt: "QR chú rể" } as Photo },
-    ],
-  },
 
   nav: [
     { label: "(Cô dâu · Chú rể)", target: "couple" },
-    { label: "(Chuyện tụi mình)", target: "story" },
-    { label: "(Nghe nhạc)", target: "music" },
+    { label: "(Hình ảnh)", target: "gallery" },
+    { label: "(Xác nhận tham dự)", target: "rsvp" },
     { label: "(Lịch trình)", target: "schedule" },
   ],
 

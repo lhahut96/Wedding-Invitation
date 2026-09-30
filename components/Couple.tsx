@@ -4,19 +4,17 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { wedding } from "@/content/wedding";
-import Photo from "./Photo";
 
 type Person = typeof wedding.groom;
 
-// "Trần Quốc Bình" -> ["Trần Quốc", "Bình"]
-function splitName(full: string) {
-  const i = full.lastIndexOf(" ");
-  return i < 0 ? ["", full] : [full.slice(0, i), full.slice(i + 1)];
+// "Lê Hoàng Anh Tú" with name "Anh Tú" -> ["Lê Hoàng", "Anh Tú"]
+function splitName(full: string, name: string) {
+  return full.endsWith(name) ? [full.slice(0, -name.length).trim(), name] : ["", full];
 }
 
 function Profile({ person, reverse }: { person: Person; reverse?: boolean }) {
   const row = useRef<HTMLDivElement>(null);
-  const [family, given] = splitName(person.fullName);
+  const [family, given] = splitName(person.fullName, person.name);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -49,7 +47,7 @@ function Profile({ person, reverse }: { person: Person; reverse?: boolean }) {
   return (
     <div ref={row} className={`relative z-10 flex w-full flex-col items-center ${reverse ? "md:flex-row-reverse" : "md:flex-row"}`}>
       <div className="profile-photo flex h-[70vh] max-h-[900px] items-center justify-center md:h-screen md:w-1/2">
-        <Photo photo={person.photo} className="aspect-[3/4] h-full rounded-2xl shadow-2xl" />
+        <img src={person.photo.src} alt={person.photo.alt} className="object-cover aspect-[3/4] h-full rounded-2xl shadow-2xl" />
       </div>
       <div
         className={`flex flex-col gap-6 px-8 pt-10 text-center md:w-[420px] md:px-0 ${
@@ -100,7 +98,7 @@ export default function Couple() {
         <span className="pointer-events-none absolute select-none font-display text-[240px] leading-none text-blush/15 md:text-[320px]">
           囍
         </span>
-        <Photo photo={wedding.couplePhoto} className="relative size-[260px] rounded-xl shadow-2xl md:size-[332px]" />
+        <img src={wedding.couplePhoto.src} alt={wedding.couplePhoto.alt} className="object-cover relative size-[260px] rounded-xl shadow-2xl md:size-[332px]" />
       </div>
 
       <div className="flex w-full flex-col">
