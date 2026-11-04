@@ -7,11 +7,14 @@ import Gallery from "@/components/Gallery";
 import Schedule from "@/components/Schedule";
 import Wishes from "@/components/Wishes";
 import Footer from "@/components/Footer";
+import { PhotoVersionProvider, PhotoVersionSwitch } from "@/components/PhotoVersion";
 
 export default function Home() {
   return (
+    <PhotoVersionProvider>
     <SmoothScroll>
       <CornerNav />
+      <PhotoVersionSwitch />
       <main>
         <Hero />
         <Intro />
@@ -22,5 +25,6 @@ export default function Home() {
         <Footer />
       </main>
     </SmoothScroll>
+    </PhotoVersionProvider>
   );
 }

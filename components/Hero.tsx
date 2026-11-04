@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { wedding } from "@/content/wedding";
 import SplitChars from "./SplitChars";
+import { usePhotoVersion } from "./PhotoVersion";
 
 // Size of the centered "window" the photos stack inside before it opens to full screen.
 const WIN_W = 320;
@@ -72,6 +73,7 @@ export default function Hero() {
   }, []);
 
   const { bride, groom, hero, dateLabel } = wedding;
+  const { photos } = usePhotoVersion();
 
   return (
     <section ref={root} className="relative h-screen w-full overflow-hidden bg-cream">
@@ -89,9 +91,9 @@ export default function Hero() {
         {/* Last layer: full-screen main photo, only visible through the window until it opens */}
         <div className="hero-layer absolute inset-0 overflow-hidden bg-ink" style={{ zIndex: hero.frames.length + 1 }}>
           <div className="hero-main-img size-full">
-            <img src={hero.main.src} alt={hero.main.alt} className="object-cover size-full opacity-85" />
+            <img src={photos.heroMain} alt={hero.main.alt} className="object-cover size-full opacity-85" />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/45 to-black/45" />
         </div>
       </div>
 

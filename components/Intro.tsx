@@ -7,7 +7,6 @@ import { wedding } from "@/content/wedding";
 
 export default function Intro() {
   const root = useRef<HTMLElement>(null);
-  const headline = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -16,18 +15,11 @@ export default function Intro() {
         y: 40, opacity: 0, stagger: 0.15, duration: 1, ease: "power3.out",
         scrollTrigger: { trigger: root.current, start: "top 70%" },
       });
-
-      // The two names start apart and slide together as the headline crosses the viewport.
-      const gap = window.innerWidth >= 1024 ? 60 : window.innerWidth >= 768 ? 40 : 20;
-      gsap
-        .timeline({ scrollTrigger: { trigger: headline.current, start: "top bottom", end: "bottom top", scrub: 0.6 } })
-        .fromTo(".intro-name-left", { x: -gap }, { x: 0, ease: "power2.out" }, 0)
-        .fromTo(".intro-name-right", { x: gap }, { x: 0, ease: "power2.out" }, 0);
     }, root);
     return () => ctx.revert();
   }, []);
 
-  const { intro, groom, bride } = wedding;
+  const { intro } = wedding;
 
   return (
     <section ref={root} className="relative w-full overflow-hidden bg-cream">
@@ -42,15 +34,6 @@ export default function Intro() {
           ))}
         </div>
       </div>
-
-      <h2
-        ref={headline}
-        className="translate-y-5 whitespace-nowrap px-4 font-display text-[6.5vw] uppercase leading-none text-wine md:translate-y-8 lg:translate-y-16"
-      >
-        <span className="intro-name-left inline-block">{groom.name}</span>
-        <span className="mx-3 inline-block">&</span>
-        <span className="intro-name-right inline-block">{bride.name}</span>
-      </h2>
     </section>
   );
 }

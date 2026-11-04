@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { wedding } from "@/content/wedding";
+import { usePhotoVersion } from "./PhotoVersion";
 
 type Person = typeof wedding.groom;
 
@@ -12,7 +13,7 @@ function splitName(full: string, name: string) {
   return full.endsWith(name) ? [full.slice(0, -name.length).trim(), name] : ["", full];
 }
 
-function Profile({ person, reverse }: { person: Person; reverse?: boolean }) {
+function Profile({ person, photo, reverse }: { person: Person; photo: string; reverse?: boolean }) {
   const row = useRef<HTMLDivElement>(null);
   const [family, given] = splitName(person.fullName, person.name);
 
@@ -45,9 +46,9 @@ function Profile({ person, reverse }: { person: Person; reverse?: boolean }) {
   }, [reverse]);
 
   return (
-    <div ref={row} className={`relative z-10 flex w-full flex-col items-center ${reverse ? "md:flex-row-reverse" : "md:flex-row"}`}>
+    <div ref={row} data-profile-row className={`relative z-10 flex w-full flex-col items-center ${reverse ? "md:flex-row-reverse" : "md:flex-row"}`}>
       <div className="profile-photo flex h-[70vh] max-h-[900px] items-center justify-center md:h-screen md:w-1/2">
-        <img src={person.photo.src} alt={person.photo.alt} className="object-cover aspect-[3/4] h-full rounded-2xl shadow-2xl" />
+        <img src={photo} alt={person.photo.alt} className="object-cover aspect-[3/4] h-full rounded-2xl shadow-2xl" />
       </div>
       <div
         className={`flex flex-col gap-6 px-8 pt-10 text-center md:w-[420px] md:px-0 ${
@@ -69,21 +70,39 @@ function Profile({ person, reverse }: { person: Person; reverse?: boolean }) {
 }
 
 export default function Couple() {
+  const { photos } = usePhotoVersion();
   const root = useRef<HTMLElement>(null);
   const center = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const mm = gsap.matchMedia();
-    // Keep the center photo fixed on screen while the profiles scroll over it (desktop only).
+    // Keep the center photo fixed on screen, in front of the profiles, and fade it out while a
+    // profile row is crossing the middle of the viewport so it never covers the text (desktop only).
     mm.add("(min-width: 800px)", () => {
+      const rows = root.current!.querySelectorAll<HTMLElement>("[data-profile-row]");
+      const updateOpacity = () => {
+        const vh = window.innerHeight;
+        let cover = 0;
+        rows.forEach((r) => {
+          const b = r.getBoundingClientRect();
+          const dist = Math.max(0, b.top - vh / 2, vh / 2 - b.bottom); // 0 while the row spans the center
+          cover = Math.max(cover, 1 - Math.min(1, dist / (vh * 0.3)));
+        });
+        gsap.set(center.current, { opacity: 1 - cover });
+      };
       ScrollTrigger.create({
         trigger: root.current,
         start: "top top",
         end: "bottom bottom",
         pin: center.current,
         pinSpacing: false,
+        onUpdate: updateOpacity,
+        onRefresh: updateOpacity,
       });
+      return () => {
+        gsap.set(center.current, { clearProps: "opacity" });
+      };
     });
     return () => mm.revert();
   }, []);
@@ -94,7 +113,7 @@ export default function Couple() {
       <div className="pointer-events-none absolute -left-[400px] top-2/3 size-[800px] rounded-full bg-blush/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-[400px] top-1/3 size-[800px] rounded-full bg-blush/20 blur-3xl" />
 
-      <div ref={center} className="relative flex h-screen w-full items-center justify-center">
+      <div ref={center} className="pointer-events-none relative z-20 flex h-screen w-full items-center justify-center">
         <span className="pointer-events-none absolute select-none font-display text-[240px] leading-none text-blush/15 md:text-[320px]">
           囍
         </span>
@@ -102,9 +121,9 @@ export default function Couple() {
       </div>
 
       <div className="flex w-full flex-col">
-        <Profile person={wedding.groom} />
-        <div className="h-[138px]" />
-        <Profile person={wedding.bride} reverse />
+        <Profile person={wedding.groom} photo={photos.groom} />
+        <div className="h-[138px] min-[800px]:h-[80vh]" />
+        <Profile person={wedding.bride} photo={photos.bride} reverse />
       </div>
     </section>
   );
