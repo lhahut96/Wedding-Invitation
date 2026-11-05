@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Playfair_Display } from "next/font/google";
+import { Lora, Playfair_Display } from "next/font/google";
 import { wedding } from "@/content/wedding";
 import "./globals.css";
 
-const body = Be_Vietnam_Pro({
-  subsets: ["latin", "vietnamese"],
-  weight: ["300", "400", "600"],
-  variable: "--font-body",
-});
-const display = Playfair_Display({
+// Same pairing as the reference site: Playfair Display for everything, Lora as fallback.
+const body = Lora({
   subsets: ["latin", "vietnamese"],
   style: ["normal", "italic"],
-  variable: "--font-display",
+  variable: "--font-lora",
+});
+const body2 = Playfair_Display({
+  subsets: ["latin", "vietnamese"],
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" className={`${body.variable} ${display.variable}`}>
+    <html lang="vi" className={`${body.variable} ${body2.variable}`}>
       <body className="font-sans antialiased overflow-x-hidden">{children}</body>
     </html>
   );

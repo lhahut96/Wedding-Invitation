@@ -5,15 +5,12 @@
 
 export type Photo = { src: string; alt: string };
 
-// Photo sets for the hero, groom and bride. The on-screen switch (PhotoVersionSwitch) flips between them;
-// `defaultPhotoVersion` is what loads first.
-export type PhotoVersion = 1 | 2;
-export const defaultPhotoVersion: PhotoVersion = 1;
-export const photoSets: Record<PhotoVersion, { heroMain: string; groom: string; bride: string }> = {
-  1: { heroMain: "/images/hero-main-v1.jpg", groom: "/images/groom-v1.jpg", bride: "/images/bride-v1.jpg" },
-  2: { heroMain: "/images/hero-main-v2.jpg", groom: "/images/groom-v2.jpg", bride: "/images/bride-v2.jpg" },
+// Fixed photo choices: hero from set 1, groom/bride from the colour-adjusted set 2.
+const photos = {
+  heroMain: "/images/hero-main-v1.jpg",
+  groom: "/images/groom-v2-adjusted.jpg",
+  bride: "/images/bride-v2-adjusted.jpg",
 };
-const defaultPhotos = photoSets[defaultPhotoVersion];
 
 export const wedding = {
   meta: {
@@ -26,14 +23,14 @@ export const wedding = {
     fullName: "Trần Như Trâm Anh",
     role: "Cô dâu",
     bio: "Mê cà phê sữa đá, sách cũ và những chuyến đi không kế hoạch.",
-    photo: { src: defaultPhotos.bride, alt: "Cô dâu" } as Photo,
+    photo: { src: photos.bride, alt: "Cô dâu" } as Photo,
   },
   groom: {
     name: "Anh Tú",
     fullName: "Lê Hoàng Anh Tú",
     role: "Chú rể",
     bio: "Kỹ sư ban ngày, đầu bếp nghiệp dư ban đêm, fan cứng của mèo.",
-    photo: { src: defaultPhotos.groom, alt: "Chú rể" } as Photo,
+    photo: { src: photos.groom, alt: "Chú rể" } as Photo,
   },
 
   // Square photo that stays pinned in the middle while the bride/groom profiles scroll past
@@ -50,7 +47,7 @@ export const wedding = {
       { src: "/images/hero-4.jpg", alt: "Khoảnh khắc 4" },
       { src: "/images/hero-5.jpg", alt: "Khoảnh khắc 5" },
     ] as Photo[],
-    main: { src: defaultPhotos.heroMain, alt: "Ảnh cưới chính" } as Photo,
+    main: { src: photos.heroMain, alt: "Ảnh cưới chính" } as Photo,
   },
 
   intro: {

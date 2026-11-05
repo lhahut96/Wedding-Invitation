@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { wedding } from "@/content/wedding";
-import { usePhotoVersion } from "./PhotoVersion";
 
 type Person = typeof wedding.groom;
 
@@ -70,7 +69,6 @@ function Profile({ person, photo, reverse }: { person: Person; photo: string; re
 }
 
 export default function Couple() {
-  const { photos } = usePhotoVersion();
   const root = useRef<HTMLElement>(null);
   const center = useRef<HTMLDivElement>(null);
 
@@ -101,7 +99,7 @@ export default function Couple() {
         onRefresh: updateOpacity,
       });
       return () => {
-        gsap.set(center.current, { clearProps: "opacity" });
+        if (center.current) gsap.set(center.current, { clearProps: "opacity" });
       };
     });
     return () => mm.revert();
@@ -121,9 +119,9 @@ export default function Couple() {
       </div>
 
       <div className="flex w-full flex-col">
-        <Profile person={wedding.groom} photo={photos.groom} />
+        <Profile person={wedding.groom} photo={wedding.groom.photo.src} />
         <div className="h-[138px] min-[800px]:h-[80vh]" />
-        <Profile person={wedding.bride} photo={photos.bride} reverse />
+        <Profile person={wedding.bride} photo={wedding.bride.photo.src} reverse />
       </div>
     </section>
   );
