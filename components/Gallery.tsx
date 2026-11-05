@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { wedding } from "@/content/wedding";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReveal } from "./useReveal";
+import { scrollToId } from "./SmoothScroll";
+
+const INITIAL_COUNT = 6;
 
 // Masonry grid of thumbnails; clicking one opens a full-size lightbox (arrows / swipe / Esc).
 export default function Gallery() {
@@ -10,6 +15,8 @@ export default function Gallery() {
   useReveal(root);
   const photos = wedding.gallery;
   const [open, setOpen] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? photos : photos.slice(0, INITIAL_COUNT);
   const touchX = useRef<number | null>(null);
 
   const step = useCallback(
@@ -32,22 +39,28 @@ export default function Gallery() {
     };
   }, [open, step]);
 
+  // Photos revealed by "Xem thêm" fade in, and scroll positions are recalculated for the taller section.
+  useEffect(() => {
+    if (!expanded) return;
+    gsap.from(".gallery-extra", { opacity: 0, y: 30, duration: 0.7, stagger: 0.04, ease: "power3.out" });
+    ScrollTrigger.refresh();
+  }, [expanded]);
+
   const current = open === null ? null : photos[open];
 
   return (
     <section id="gallery" ref={root} className="bg-cream px-4 py-24 md:px-10">
       <div className="reveal text-center">
         <h2 className="font-display text-5xl italic md:text-7xl">{wedding.galleryLabel.title}</h2>
-        <p className="mt-4 tracking-[0.4em] text-wine">{wedding.galleryLabel.years}</p>
       </div>
 
       <div className="mx-auto mt-14 max-w-6xl columns-2 gap-3 md:columns-3 md:gap-4">
-        {photos.map((p, i) => (
+        {visible.map((p, i) => (
           <button
             key={p.src}
             onClick={() => setOpen(i)}
             aria-label={`Xem ảnh ${i + 1}`}
-            className="reveal group mb-3 block w-full cursor-zoom-in overflow-hidden rounded-sm md:mb-4"
+            className={`group mb-3 block w-full cursor-zoom-in overflow-hidden rounded-sm md:mb-4 ${i < INITIAL_COUNT ? "reveal" : "gallery-extra"}`}
           >
             <img
               src={p.src}
@@ -57,6 +70,18 @@ export default function Gallery() {
             />
           </button>
         ))}
+      </div>
+
+      <div className="mt-12 text-center">
+        <button
+          onClick={() => {
+            if (expanded) scrollToId("gallery");
+            setExpanded(!expanded);
+          }}
+          className="cursor-pointer rounded-full border border-ink/30 px-8 py-3 text-xs uppercase tracking-[0.3em] transition hover:bg-ink hover:text-cream"
+        >
+          {expanded ? "Thu gọn" : `Xem thêm (${photos.length - INITIAL_COUNT})`}
+        </button>
       </div>
 
       {current && (
@@ -75,7 +100,7 @@ export default function Gallery() {
           }}
         >
           <img
-            src={current.src}
+            src={current.full ?? current.src}
             alt={current.alt}
             className="max-h-full max-w-full object-contain"
             onClick={(e) => e.stopPropagation()}

@@ -15,8 +15,7 @@ export default function Schedule() {
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 py-24 text-center">
         <p className="reveal text-xs uppercase tracking-[0.3em] text-wine">{venue.lead}</p>
         <h2 className="reveal mt-4 font-display text-6xl italic md:text-9xl">{venue.name}</h2>
-        <p className="reveal mt-8 text-sm uppercase tracking-[0.3em]">{venue.kind}</p>
-        <p className="reveal mt-2 max-w-md text-ink/70">{venue.address}</p>
+        <p className="reveal mt-8 max-w-md text-ink/70">{venue.address}</p>
         <a
           href={venue.mapUrl}
           target="_blank"
@@ -45,7 +44,18 @@ export default function Schedule() {
                 }`}
               />
               <p className="font-display text-2xl italic text-wine">{t.time}</p>
-              <p className="mt-1 text-sm uppercase tracking-[0.25em]">{t.label}</p>
+              <p className="mt-2 font-display text-3xl md:text-4xl">{t.label}</p>
+              {t.activities && (
+                <div className="mt-4">
+                  {t.activitiesLabel && <p className="text-lg">{t.activitiesLabel}</p>}
+                  <ul className="mt-2 space-y-1 italic text-ink/80">
+                    {t.activities.map((a) => (
+                      <li key={a}>• {a}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {t.note && <p className="mt-2 italic text-ink/80">{t.note}</p>}
             </li>
           ))}
         </ol>
