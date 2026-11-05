@@ -1,6 +1,7 @@
 import SmoothScroll from "@/components/SmoothScroll";
 import CornerNav from "@/components/CornerNav";
 import Hero from "@/components/Hero";
+import Transition from "@/components/Transition";
 import Intro from "@/components/Intro";
 import Couple from "@/components/Couple";
 import Gallery from "@/components/Gallery";
@@ -14,6 +15,7 @@ export default function Home() {
       <CornerNav />
       <main>
         <Hero />
+        <Transition />
         <Intro />
         <Couple />
         <Schedule />

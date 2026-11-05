@@ -99,18 +99,18 @@ export default function Hero() {
         {/* Mobile: the block is spread over the photo so "Trâm Anh" sits just above the groom's head and
             "Anh Tú" at the bride's neck, with a small "&" between them. */}
         <div className="relative -translate-y-[3vh] md:translate-y-0">
-          <h1 className="hero-title flex h-[27vh] flex-col items-center justify-between font-display text-[12vw] leading-[0.85] tracking-tight md:h-auto md:justify-center md:gap-2 md:text-[8vw]">
-            <span className="block overflow-hidden py-[0.06em] pr-[0.1em] whitespace-nowrap">
+          <h1 className="hero-title flex h-[27vh] flex-col items-center justify-between font-display text-[12vw] leading-none tracking-tight md:h-auto md:justify-center md:gap-2 md:text-[8vw]">
+            <span className="block overflow-hidden py-[0.12em] pr-[0.1em] whitespace-nowrap">
               <SplitChars text={bride.name} />
             </span>
             <span className="flex items-center gap-3 text-[5vw] italic text-cream/80 md:text-[3.5vw]">
               <span className="hero-rule h-px w-[9vw] bg-cream/70 md:w-[4vw]" />
-              <span className="block overflow-hidden py-[0.06em] pr-[0.1em]">
+              <span className="block overflow-hidden py-[0.12em] pr-[0.1em]">
                 <SplitChars text="&" />
               </span>
               <span className="hero-rule h-px w-[9vw] bg-cream/70 md:w-[4vw]" />
             </span>
-            <span className="block overflow-hidden py-[0.06em] pr-[0.1em] whitespace-nowrap">
+            <span className="block overflow-hidden py-[0.12em] pr-[0.1em] whitespace-nowrap">
               <SplitChars text={groom.name} />
             </span>
           </h1>

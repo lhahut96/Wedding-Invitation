@@ -45,7 +45,7 @@ function Profile({ person, photo, reverse }: { person: Person; photo: string; re
   }, [reverse]);
 
   return (
-    <div ref={row} data-profile-row className={`relative z-10 flex w-full flex-col items-center ${reverse ? "md:flex-row-reverse" : "md:flex-row"}`}>
+    <div ref={row} className={`relative z-10 flex w-full flex-col items-center ${reverse ? "md:flex-row-reverse" : "md:flex-row"}`}>
       <div className="profile-photo flex h-[70vh] max-h-[900px] items-center justify-center md:h-screen md:w-1/2">
         <img src={photo} alt={person.photo.alt} className="object-cover aspect-[3/4] h-full rounded-2xl shadow-2xl" />
       </div>
@@ -54,7 +54,7 @@ function Profile({ person, photo, reverse }: { person: Person; photo: string; re
           reverse ? "md:-mr-8 md:text-right" : "md:-ml-16 md:text-left"
         }`}
       >
-        <h3 className="profile-name font-display text-5xl italic leading-[0.9] mix-blend-difference md:text-7xl lg:text-8xl">
+        <h3 className="profile-name font-display text-5xl italic leading-[1.05] mix-blend-difference md:text-7xl lg:text-8xl">
           {family}
           <br />
           {given}
@@ -69,58 +69,15 @@ function Profile({ person, photo, reverse }: { person: Person; photo: string; re
 }
 
 export default function Couple() {
-  const root = useRef<HTMLElement>(null);
-  const center = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const mm = gsap.matchMedia();
-    // Keep the center photo fixed on screen, in front of the profiles, and fade it out while a
-    // profile row is crossing the middle of the viewport so it never covers the text (desktop only).
-    mm.add("(min-width: 800px)", () => {
-      const rows = root.current!.querySelectorAll<HTMLElement>("[data-profile-row]");
-      const updateOpacity = () => {
-        const vh = window.innerHeight;
-        let cover = 0;
-        rows.forEach((r) => {
-          const b = r.getBoundingClientRect();
-          const dist = Math.max(0, b.top - vh / 2, vh / 2 - b.bottom); // 0 while the row spans the center
-          cover = Math.max(cover, 1 - Math.min(1, dist / (vh * 0.3)));
-        });
-        gsap.set(center.current, { opacity: 1 - cover });
-      };
-      ScrollTrigger.create({
-        trigger: root.current,
-        start: "top top",
-        end: "bottom bottom",
-        pin: center.current,
-        pinSpacing: false,
-        onUpdate: updateOpacity,
-        onRefresh: updateOpacity,
-      });
-      return () => {
-        if (center.current) gsap.set(center.current, { clearProps: "opacity" });
-      };
-    });
-    return () => mm.revert();
-  }, []);
-
   return (
-    <section id="couple" ref={root} className="relative flex min-h-[300vh] w-full flex-col items-center overflow-hidden bg-wine text-cream">
+    <section id="couple" className="relative flex w-full flex-col items-center overflow-hidden bg-wine py-16 text-cream md:py-0">
       {/* Soft glows */}
       <div className="pointer-events-none absolute -left-[400px] top-2/3 size-[800px] rounded-full bg-blush/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-[400px] top-1/3 size-[800px] rounded-full bg-blush/20 blur-3xl" />
 
-      <div ref={center} className="pointer-events-none relative z-20 flex h-screen w-full items-center justify-center">
-        <span className="pointer-events-none absolute select-none font-display text-[240px] leading-none text-blush/15 md:text-[320px]">
-          囍
-        </span>
-        <img src={wedding.couplePhoto.src} alt={wedding.couplePhoto.alt} className="object-cover relative size-[260px] rounded-xl shadow-2xl md:size-[332px]" />
-      </div>
-
       <div className="flex w-full flex-col">
         <Profile person={wedding.groom} photo={wedding.groom.photo.src} />
-        <div className="h-[138px] min-[800px]:h-[80vh]" />
+        <div className="h-[60px] md:h-[10vh]" />
         <Profile person={wedding.bride} photo={wedding.bride.photo.src} reverse />
       </div>
     </section>
